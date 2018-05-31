@@ -1,5 +1,6 @@
 import { Storage as StroageManager } from './Storage'
 import { Base64 } from 'js-base64'
+import { objectMethodWrapper } from './Wrapper'
 
 const TrackStoragePreffixKey = 'TrackStoragePreffixKey'
 const TrackPatchKey = 'TrackPatchKey'
@@ -15,9 +16,9 @@ export class TrackSender {
   private maxNumberOfTrackInRequest = 50
 
   private processingFlag: boolean = false
+  private forceToSend: boolean = false
 
   private customRequest: CustomRequest
-  private requestQueue: wx.RequestOptions[] = []
 
   constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request) {
     this.url = url
@@ -25,6 +26,16 @@ export class TrackSender {
     this.patchCount = patchCount
     this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest
     this.customRequest = customRequest
+
+    const appConstructor = App
+
+    App = function (app) {
+      objectMethodWrapper(app, 'onHide', () => {
+        this.forceToSend = true
+        this.tryToSendPatchedTrack().then(() => null)
+      })
+      return appConstructor(app)
+    }
   }
 
   private sendTrack(properties: any) {
@@ -55,7 +66,7 @@ export class TrackSender {
       return
     }
     const trackPatch: any[] = (await this.storageManager.getValue(TrackPatchKey)) as any[]
-    if (trackPatch.length < this.patchCount) {
+    if (trackPatch.length < this.patchCount && !this.forceToSend) {
       return
     }
     let patch = trackPatch.slice(0, Math.min(trackPatch.length, this.maxNumberOfTrackInRequest))

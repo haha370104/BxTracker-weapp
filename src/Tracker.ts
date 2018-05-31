@@ -1,4 +1,5 @@
 import { CustomRequest, TrackSender } from './TrackSender'
+import { objectMethodWrapper } from './Wrapper'
 
 export interface TrackerConfig {
   // 服务器地址
@@ -46,19 +47,6 @@ export class Tracker {
   public enableAutoPageViewEvent(pageView?: (page) => { message: string, detail: any }) {
     const pageConstructor = Page
 
-    const objectMethodWrapper = (object, methodName: string, implement) => {
-      if (object[methodName]) {
-        let originMethod = object[methodName]
-        object[methodName] = function (e) {
-          implement.call(this, e, methodName)
-          originMethod.call(this, e)
-        }
-      } else
-        object[methodName] = function (e) {
-          implement.call(this, e, methodName)
-        }
-    }
-
     Page = function (page) {
       if (pageView) {
         let properties = pageView(page)
@@ -77,7 +65,7 @@ export class Tracker {
   public trackMessage(message, detail) {
     this.sender.addTrack({
       message,
-      detail,
+      detail: Object.assign(detail, this.globalProperityes)
     })
   }
 }

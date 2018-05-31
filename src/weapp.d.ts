@@ -68,7 +68,7 @@ declare interface IApp {
 /**
  * App() 函数用来注册一个小程序。接受一个 object 参数，其指定小程序的生命周期函数等。
  */
-declare function App(app: IApp): void
+declare let App: (app: IApp) => void
 
 /**
  * 获取小程序实例

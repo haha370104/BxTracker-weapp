@@ -2,7 +2,7 @@
   "name": "BxTracker-weapp",
   "version": "1.0.0",
   "description": "Package description here",
-  "main": "lib/index.js",
+  "main": "dist/BxTracker.weapp.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "test": "mocha --require babel-register",

@@ -1,6 +1,6 @@
 'use strict'
 const webpack = require('webpack')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const env = process.env.NODE_ENV
 
