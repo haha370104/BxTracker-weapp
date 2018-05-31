@@ -29,9 +29,12 @@
     "url": "https://github.com/username/package-name/issues"
   },
   "homepage": "https://github.com/username/package-name#readme",
-  "dependencies": {},
+  "dependencies": {
+    "js-base64": "^2.4.5"
+  },
   "devDependencies": {
     "@types/expect.js": "^0.3.28",
+    "@types/js-base64": "^2.3.1",
     "@types/mocha": "^2.2.33",
     "@types/node": "0.0.2",
     "awesome-typescript-loader": "^3.0.0-beta.9",

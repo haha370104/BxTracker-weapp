@@ -1,5 +1,3 @@
-export function a() {
-  wx.showToast({
-    title: '123123',
-  })
-}
+import { Tracker } from './Tracker'
+
+export default Tracker

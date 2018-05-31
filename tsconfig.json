@@ -5,7 +5,8 @@
     "target": "es5",
     "jsx": "react",
     "experimentalDecorators": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "lib": ["es6", "es2015.promise"]
   },
   "exclude": [
     "node_modules",
