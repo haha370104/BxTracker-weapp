@@ -6,7 +6,16 @@
     "jsx": "react",
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "lib": ["ES2015", "es6", "es2015.promise"]
+    "rootDir": "src",
+    "outDir": "build",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "lib": [
+      "ES2015",
+      "es6",
+      "es2015.promise"
+    ]
   },
   "exclude": [
     "node_modules",

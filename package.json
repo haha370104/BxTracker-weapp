@@ -1,11 +1,11 @@
 {
   "name": "weapp-tracker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A tracker used in wechat mini program.",
-  "main": "dist/weapp-tracker.js",
+  "main": "build/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "webpack --watch --mode development",
+    "build": "tsc && webpack --mode development",
     "clean": "rm -rf ./dist"
   },
   "repository": {

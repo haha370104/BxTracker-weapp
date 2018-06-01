@@ -6,14 +6,11 @@ const env = process.env.NODE_ENV
 
 const config = {
   devtool: 'source-map',
-  module: {
-    rules: [
-      {test: /\.ts$/, loader: 'ts-loader'}
-    ]
-  },
+  entry: __dirname + "/build/index.js",
   output: {
     path: __dirname + "/dist",
-    filename: "weapp-tracker.js"
+    filename: "weapp-tracker.js",
+    libraryTarget: 'commonjs',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],

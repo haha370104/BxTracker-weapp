@@ -39,7 +39,7 @@ export class Storage {
   }
 
   public getStorage(key: string): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const innerKey = this.innerStorageKey(key)
       wx.getStorage({
         key: innerKey,
@@ -47,7 +47,7 @@ export class Storage {
           resolve(res.data)
         },
         fail: reason => {
-          reject(reason)
+          resolve(null)
         },
       })
     })
