@@ -29,6 +29,7 @@ export class Tracker {
   private serverURL: string = ''
 
   private globalProperityes: any = {}
+  private systemInfo: wx.GetSystemInfoResult = wx.getSystemInfoSync()
 
   public static configure(config: TrackerConfig) {
     if (this.instance) {
@@ -65,7 +66,8 @@ export class Tracker {
   public trackMessage(message, detail) {
     this.sender.addTrack({
       message,
-      detail: Object.assign(detail, this.globalProperityes)
+      detail: Object.assign(detail, this.globalProperityes),
+      systemInfo: this.systemInfo,
     })
   }
 }

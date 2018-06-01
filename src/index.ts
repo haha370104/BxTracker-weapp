@@ -1,3 +1,3 @@
-import { Tracker } from './Tracker'
+import { Tracker as T } from './Tracker'
 
-export default Tracker
+export const Tracker = T
