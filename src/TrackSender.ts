@@ -43,13 +43,16 @@ export class TrackSender {
     return new Promise((resolve, reject) => {
       this.customRequest({
         url: this.url,
+        method: 'POST',
         data: {
-          data: Base64.encode(JSON.stringify({
-            ...properties,
-          })),
+          data: Base64.encode(JSON.stringify(properties)),
         },
         success: res => {
-          resolve(res)
+          if (res.statusCode === 200) {
+            resolve(res)
+            return
+          }
+          reject(res)
         },
         fail: reason => {
           reject(reason)

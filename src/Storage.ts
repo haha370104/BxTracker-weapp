@@ -11,23 +11,21 @@ export class Storage {
   }
 
   public async getValue<T>(key: string, defaultValue?: T): Promise<T> {
-    const innerKey = this.innerStorageKey(key)
-    const memoryCache = this.getMemoryCache(innerKey)
+    const memoryCache = this.getMemoryCache(key)
     if (memoryCache) {
       return memoryCache
     }
-    const storageCache = await this.getStorage(innerKey)
+    const storageCache = await this.getStorage(key)
     if (storageCache) {
-      this.setMemoryCache(innerKey, storageCache)
+      this.setMemoryCache(key, storageCache)
       return storageCache
     }
     return defaultValue
   }
 
   public async setValue(key: string, value: any) {
-    const innerKey = this.innerStorageKey(key)
-    this.setMemoryCache(innerKey, value)
-    await this.setStorage(innerKey, value)
+    this.setMemoryCache(key, value)
+    await this.setStorage(key, value)
   }
 
   public getMemoryCache(key: string) {
