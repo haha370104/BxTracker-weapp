@@ -84,7 +84,7 @@ export class TrackSender {
     trackIncrementId++
     properties['_id'] = trackIncrementId
 
-    let trackPatch: any[] = (await this.storageManager.getValue(TrackPatchKey)) as any[]
+    let trackPatch: any[] = (await this.storageManager.getValue(TrackPatchKey, [])) as any[]
     trackPatch.push(properties)
 
     const trackPatchSetterPromise = this.storageManager.setValue(TrackPatchKey, trackPatch)
