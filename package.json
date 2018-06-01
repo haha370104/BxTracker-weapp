@@ -1,34 +1,20 @@
 {
   "name": "BxTracker-weapp",
   "version": "1.0.0",
-  "description": "Package description here",
-  "main": "lib/index.js",
+  "description": "A tracker used in wechat mini program.",
+  "main": "dist/BxTracker-weapp.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "test": "mocha --require babel-register",
-    "test:watch": "npm test -- --watch",
-    "build": "npm run build:lib && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "build:js": "tsc --outDir js --declaration --declarationDir types",
-    "prebuild:lib": "npm run build:js",
-    "build:lib": "babel js --out-dir lib",
-    "prebuild:es": "npm run build:js",
-    "build:es": "cross-env BABEL_ENV=es babel js --out-dir es",
-    "build:umd": "cross-env NODE_ENV=development webpack src/index.ts dist/BxTracker-weapp.js",
-    "build:umd:min": "cross-env NODE_ENV=production webpack src/index.ts dist/BxTracker-weapp.js",
-    "clean": "rimraf dist lib js es types",
-    "watch:lib": "npm run build:umd:min -- --watch & npm run build:lib -- --watch"
+    "build": "webpack --watch --mode development",
+    "clean": "rm -rf ./dist"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/username/repo-name.git"
+    "url": "https://github.com/haha370104/BxTracker-weapp.git"
   },
   "keywords": [],
-  "author": "name",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/username/package-name/issues"
-  },
-  "homepage": "https://github.com/username/package-name#readme",
+  "author": "haha370104",
+  "license": "MIT",
   "dependencies": {
     "js-base64": "^2.4.5"
   },
@@ -58,10 +44,12 @@
     "mocha-lcov-reporter": "^1.2.0",
     "rifraf": "^2.0.3",
     "rimraf": "^2.5.1",
+    "ts-loader": "^4.3.0",
     "ts-node": "^1.7.0",
     "typescript": "^2.1.4",
     "uglifyjs-webpack-plugin": "^1.2.5",
-    "webpack": "^1.14.0",
+    "webpack": "^4.9.1",
+    "webpack-cli": "^2.1.4",
     "webpack-node-externals": "^1.5.4"
   }
 }

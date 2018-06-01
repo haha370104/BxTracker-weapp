@@ -6,28 +6,18 @@ const env = process.env.NODE_ENV
 
 const config = {
   module: {
-    loaders: [
-      {
-        test: /\.tsx?$/,
-        loaders: ['babel', 'awesome-typescript'],
-        exclude: /node_modules/
-      }
+    rules: [
+      {test: /\.ts$/, loader: 'ts-loader'}
     ]
   },
   output: {
-    library: 'LibraryName',
-    libraryTarget: 'umd'
+    path: __dirname + "/dist",
+    filename: "BxTracker-weapp.js"
   },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(env)
-    })
-  ],
   resolve: {
-    extensions: ['', '.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
-  externals: {}
+  plugins: [],
 }
 
 if (env === 'production') {
