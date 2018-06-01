@@ -5,6 +5,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const env = process.env.NODE_ENV
 
 const config = {
+  devtool: 'source-map',
   module: {
     rules: [
       {test: /\.ts$/, loader: 'ts-loader'}
@@ -12,7 +13,7 @@ const config = {
   },
   output: {
     path: __dirname + "/dist",
-    filename: "BxTracker-weapp.js"
+    filename: "weapp-tracker.js"
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
