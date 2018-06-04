@@ -15,10 +15,9 @@ var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
 var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
     function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
-        this.extraInfo = {};
-        this.serverURL = '';
-        this.distinctID = '';
         this.globalProperityes = {};
+        this.distinctID = '';
+        this.serverURL = '';
         this.serverURL = serverURL;
         this.storageManager = new Storage_1.Storage(TrackerStoragePrefixKey);
         if (distinctID) {
@@ -60,8 +59,9 @@ var Tracker = /** @class */ (function () {
     };
     Tracker.prototype.trackMessage = function (event, detail) {
         this.sender.addTrack({
-            properties: __assign({ distinct_id: this.distinctID }, this.extraInfo, this.globalProperityes, detail),
+            properties: __assign({}, this.globalProperityes, detail),
             event: event,
+            distinct_id: this.distinctID,
         });
     };
     Tracker.prototype.getDistinctID = function () {

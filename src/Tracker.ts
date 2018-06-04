@@ -38,15 +38,14 @@ export class Tracker {
       customRequest || wx.request)
   }
 
-  protected extraInfo: any = {}
+  protected sender: TrackSender
+  protected globalProperityes: any = {}
+  protected distinctID: string = ''
 
   private static instance: Tracker
-  private sender: TrackSender
   private storageManager: Storage
   private serverURL: string = ''
 
-  private distinctID: string = ''
-  private globalProperityes: any = {}
 
   public static configure(config: TrackerConfig) {
     if (this.instance) {
@@ -83,12 +82,11 @@ export class Tracker {
   public trackMessage(event, detail) {
     this.sender.addTrack({
       properties: {
-        distinct_id: this.distinctID,
-        ...this.extraInfo,
         ...this.globalProperityes,
         ...detail,
       },
       event,
+      distinct_id: this.distinctID,
     })
   }
 
