@@ -16,13 +16,15 @@ export interface TrackerConfig {
 }
 
 export class Tracker {
-  private constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest) {
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest) {
     this.serverURL = serverURL
     this.sender = new TrackSender(serverURL,
       patchCount || 10,
       maxNumberOfTrackInRequest || 50,
       customRequest || wx.request)
   }
+
+  protected extraInfo: any = {}
 
   private static instance: Tracker
   private sender: TrackSender
@@ -34,7 +36,7 @@ export class Tracker {
     if (this.instance) {
       throw new Error('has been configured')
     }
-    this.instance = new Tracker(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest)
+    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest)
   }
 
   public static sharedInstance(): Tracker {
@@ -59,13 +61,17 @@ export class Tracker {
   }
 
   public setGlobalProperties(globalProperties: any) {
-    this.globalProperityes = globalProperties
+    this.globalProperityes = globalProperties || {}
   }
 
-  public trackMessage(message, detail) {
+  public trackMessage(event, detail) {
     this.sender.addTrack({
-      message,
-      detail: Object.assign(detail, this.globalProperityes),
+      properties: {
+        ...this.extraInfo,
+        ...this.globalProperityes,
+        ...detail,
+      },
+      event,
     })
   }
 }

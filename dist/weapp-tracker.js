@@ -86,6 +86,47 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./build/BxTracker.js":
+/*!****************************!*\
+  !*** ./build/BxTracker.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Tracker_1 = __webpack_require__(/*! ./Tracker */ "./build/Tracker.js");
+var BxTracker = /** @class */ (function (_super) {
+    __extends(BxTracker, _super);
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) || this;
+        var systemInfo = wx.getSystemInfoSync();
+        _this.extraInfo.$model = systemInfo['model'];
+        _this.extraInfo.$screen_width = Number(systemInfo['windowWidth']);
+        _this.extraInfo.$screen_height = Number(systemInfo['windowHeight']);
+        _this.extraInfo.$os = systemInfo['system'].split(' ')[0];
+        _this.extraInfo.$os_version = systemInfo['system'].split(' ')[1];
+        _this.extraInfo.$env_version = systemInfo['version'];
+        return _this;
+    }
+    return BxTracker;
+}(Tracker_1.Tracker));
+exports.BxTracker = BxTracker;
+//# sourceMappingURL=BxTracker.js.map
+
+/***/ }),
+
 /***/ "./build/Storage.js":
 /*!**************************!*\
   !*** ./build/Storage.js ***!
@@ -408,11 +449,20 @@ exports.TrackSender = TrackSender;
 
 "use strict";
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrackSender_1 = __webpack_require__(/*! ./TrackSender */ "./build/TrackSender.js");
 var Wrapper_1 = __webpack_require__(/*! ./Wrapper */ "./build/Wrapper.js");
 var Tracker = /** @class */ (function () {
     function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) {
+        this.extraInfo = {};
         this.serverURL = '';
         this.globalProperityes = {};
         this.serverURL = serverURL;
@@ -422,7 +472,7 @@ var Tracker = /** @class */ (function () {
         if (this.instance) {
             throw new Error('has been configured');
         }
-        this.instance = new Tracker(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest);
+        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest);
     };
     Tracker.sharedInstance = function () {
         if (!this.instance) {
@@ -444,12 +494,12 @@ var Tracker = /** @class */ (function () {
         };
     };
     Tracker.prototype.setGlobalProperties = function (globalProperties) {
-        this.globalProperityes = globalProperties;
+        this.globalProperityes = globalProperties || {};
     };
-    Tracker.prototype.trackMessage = function (message, detail) {
+    Tracker.prototype.trackMessage = function (event, detail) {
         this.sender.addTrack({
-            message: message,
-            detail: Object.assign(detail, this.globalProperityes),
+            properties: __assign({}, this.extraInfo, this.globalProperityes, detail),
+            event: event,
         });
     };
     return Tracker;
@@ -497,7 +547,9 @@ exports.objectMethodWrapper = function (object, methodName, implement) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = __webpack_require__(/*! ./Tracker */ "./build/Tracker.js");
+var BxTracker_1 = __webpack_require__(/*! ./BxTracker */ "./build/BxTracker.js");
 exports.Tracker = Tracker_1.Tracker;
+exports.BxTracker = BxTracker_1.BxTracker;
 //# sourceMappingURL=index.js.map
 
 /***/ }),

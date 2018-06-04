@@ -6,7 +6,8 @@ export interface TrackerConfig {
     customRequest?: CustomRequest;
 }
 export declare class Tracker {
-    private constructor();
+    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest);
+    protected extraInfo: any;
     private static instance;
     private sender;
     private serverURL;
@@ -18,5 +19,5 @@ export declare class Tracker {
         detail: any;
     }): void;
     setGlobalProperties(globalProperties: any): void;
-    trackMessage(message: any, detail: any): void;
+    trackMessage(event: any, detail: any): void;
 }
