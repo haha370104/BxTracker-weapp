@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Storage_1 = require("./Storage");
 var js_base64_1 = require("js-base64");
 var Wrapper_1 = require("./Wrapper");
-var TrackStoragePreffixKey = 'TrackStoragePreffixKey';
+var TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey';
 var TrackPatchKey = 'TrackPatchKey';
 var TrackIncrementIdKey = 'TrackIncrementIdKey';
 var TrackSender = /** @class */ (function () {
@@ -51,7 +51,7 @@ var TrackSender = /** @class */ (function () {
         this.processingFlag = false;
         this.forceToSend = false;
         this.url = url;
-        this.storageManager = new Storage_1.Storage(TrackStoragePreffixKey);
+        this.storageManager = new Storage_1.Storage(TrackSenderStoragePrefixKey);
         this.patchCount = patchCount;
         this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest;
         this.customRequest = customRequest;

@@ -3,8 +3,8 @@ import { CustomRequest } from './TrackSender'
 
 export class BxTracker extends Tracker {
 
-  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest) {
-    super(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest)
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string) {
+    super(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID)
 
     const systemInfo = wx.getSystemInfoSync()
 

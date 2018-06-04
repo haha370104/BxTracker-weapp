@@ -2,7 +2,7 @@ import { Storage as StroageManager } from './Storage'
 import { Base64 } from 'js-base64'
 import { objectMethodWrapper } from './Wrapper'
 
-const TrackStoragePreffixKey = 'TrackStoragePreffixKey'
+const TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey'
 const TrackPatchKey = 'TrackPatchKey'
 const TrackIncrementIdKey = 'TrackIncrementIdKey'
 
@@ -22,7 +22,7 @@ export class TrackSender {
 
   constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request) {
     this.url = url
-    this.storageManager = new StroageManager(TrackStoragePreffixKey)
+    this.storageManager = new StroageManager(TrackSenderStoragePrefixKey)
     this.patchCount = patchCount
     this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest
     this.customRequest = customRequest

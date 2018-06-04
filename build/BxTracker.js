@@ -13,8 +13,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = require("./Tracker");
 var BxTracker = /** @class */ (function (_super) {
     __extends(BxTracker, _super);
-    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) {
-        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) || this;
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) || this;
         var systemInfo = wx.getSystemInfoSync();
         _this.extraInfo.$model = systemInfo['model'];
         _this.extraInfo.$screen_width = Number(systemInfo['windowWidth']);

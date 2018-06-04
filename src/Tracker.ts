@@ -1,3 +1,4 @@
+import { Storage } from './Storage'
 import { CustomRequest, TrackSender } from './TrackSender'
 import { objectMethodWrapper } from './Wrapper'
 
@@ -13,11 +14,24 @@ export interface TrackerConfig {
 
   // 自定义的request方法
   customRequest?: CustomRequest
+
+  // 用户已经标示的ID
+  distinctID?: string
 }
 
+const TrackerStoragePrefixKey = 'TrackerStoragePrefixKey'
+const TrackerDistinctIDKey = 'TrackerDistinctIDKey'
+
 export class Tracker {
-  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest) {
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string) {
     this.serverURL = serverURL
+    this.storageManager = new Storage(TrackerStoragePrefixKey)
+    if (distinctID) {
+      this.setDistinctID(distinctID)
+      this.distinctID = distinctID
+    } else {
+      this.distinctID = this.getDistinctID()
+    }
     this.sender = new TrackSender(serverURL,
       patchCount || 10,
       maxNumberOfTrackInRequest || 50,
@@ -28,15 +42,17 @@ export class Tracker {
 
   private static instance: Tracker
   private sender: TrackSender
+  private storageManager: Storage
   private serverURL: string = ''
 
+  private distinctID: string = ''
   private globalProperityes: any = {}
 
   public static configure(config: TrackerConfig) {
     if (this.instance) {
       throw new Error('has been configured')
     }
-    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest)
+    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID)
   }
 
   public static sharedInstance(): Tracker {
@@ -67,11 +83,29 @@ export class Tracker {
   public trackMessage(event, detail) {
     this.sender.addTrack({
       properties: {
+        distinct_id: this.distinctID,
         ...this.extraInfo,
         ...this.globalProperityes,
         ...detail,
       },
       event,
     })
+  }
+
+  public getDistinctID(): string {
+    let distinctID = this.storageManager.getStorageSync(TrackerDistinctIDKey)
+    if (!distinctID) {
+      distinctID = this.generateDistinctID()
+      this.storageManager.setStorageSync(TrackerDistinctIDKey, distinctID)
+    }
+    return distinctID
+  }
+
+  public setDistinctID(distinctID: string) {
+    this.storageManager.setStorageSync(TrackerDistinctIDKey, distinctID)
+  }
+
+  private generateDistinctID() {
+    return '' + Date.now() + '-' + Math.floor(1e7 * Math.random()) + '-' + Math.random().toString(16).replace('.', '') + '-' + String(Math.random() * 31242).replace('.', '').slice(0, 8)
   }
 }

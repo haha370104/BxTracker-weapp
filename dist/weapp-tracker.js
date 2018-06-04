@@ -109,8 +109,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = __webpack_require__(/*! ./Tracker */ "./build/Tracker.js");
 var BxTracker = /** @class */ (function (_super) {
     __extends(BxTracker, _super);
-    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) {
-        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) || this;
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) || this;
         var systemInfo = wx.getSystemInfoSync();
         _this.extraInfo.$model = systemInfo['model'];
         _this.extraInfo.$screen_width = Number(systemInfo['windowWidth']);
@@ -315,7 +315,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Storage_1 = __webpack_require__(/*! ./Storage */ "./build/Storage.js");
 var js_base64_1 = __webpack_require__(/*! js-base64 */ "./node_modules/js-base64/base64.js");
 var Wrapper_1 = __webpack_require__(/*! ./Wrapper */ "./build/Wrapper.js");
-var TrackStoragePreffixKey = 'TrackStoragePreffixKey';
+var TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey';
 var TrackPatchKey = 'TrackPatchKey';
 var TrackIncrementIdKey = 'TrackIncrementIdKey';
 var TrackSender = /** @class */ (function () {
@@ -328,7 +328,7 @@ var TrackSender = /** @class */ (function () {
         this.processingFlag = false;
         this.forceToSend = false;
         this.url = url;
-        this.storageManager = new Storage_1.Storage(TrackStoragePreffixKey);
+        this.storageManager = new Storage_1.Storage(TrackSenderStoragePrefixKey);
         this.patchCount = patchCount;
         this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest;
         this.customRequest = customRequest;
@@ -458,21 +458,33 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var Storage_1 = __webpack_require__(/*! ./Storage */ "./build/Storage.js");
 var TrackSender_1 = __webpack_require__(/*! ./TrackSender */ "./build/TrackSender.js");
 var Wrapper_1 = __webpack_require__(/*! ./Wrapper */ "./build/Wrapper.js");
+var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
+var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
-    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest) {
+    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
         this.extraInfo = {};
         this.serverURL = '';
+        this.distinctID = '';
         this.globalProperityes = {};
         this.serverURL = serverURL;
+        this.storageManager = new Storage_1.Storage(TrackerStoragePrefixKey);
+        if (distinctID) {
+            this.setDistinctID(distinctID);
+            this.distinctID = distinctID;
+        }
+        else {
+            this.distinctID = this.getDistinctID();
+        }
         this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request);
     }
     Tracker.configure = function (config) {
         if (this.instance) {
             throw new Error('has been configured');
         }
-        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest);
+        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID);
     };
     Tracker.sharedInstance = function () {
         if (!this.instance) {
@@ -498,9 +510,23 @@ var Tracker = /** @class */ (function () {
     };
     Tracker.prototype.trackMessage = function (event, detail) {
         this.sender.addTrack({
-            properties: __assign({}, this.extraInfo, this.globalProperityes, detail),
+            properties: __assign({ distinct_id: this.distinctID }, this.extraInfo, this.globalProperityes, detail),
             event: event,
         });
+    };
+    Tracker.prototype.getDistinctID = function () {
+        var distinctID = this.storageManager.getStorageSync(TrackerDistinctIDKey);
+        if (!distinctID) {
+            distinctID = this.generateDistinctID();
+            this.storageManager.setStorageSync(TrackerDistinctIDKey, distinctID);
+        }
+        return distinctID;
+    };
+    Tracker.prototype.setDistinctID = function (distinctID) {
+        this.storageManager.setStorageSync(TrackerDistinctIDKey, distinctID);
+    };
+    Tracker.prototype.generateDistinctID = function () {
+        return '' + Date.now() + '-' + Math.floor(1e7 * Math.random()) + '-' + Math.random().toString(16).replace('.', '') + '-' + String(Math.random() * 31242).replace('.', '').slice(0, 8);
     };
     return Tracker;
 }());

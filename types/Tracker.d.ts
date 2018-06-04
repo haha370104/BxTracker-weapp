@@ -4,13 +4,16 @@ export interface TrackerConfig {
     patchCount?: number;
     maxNumberOfTrackInRequest?: number;
     customRequest?: CustomRequest;
+    distinctID?: string;
 }
 export declare class Tracker {
-    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest);
+    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string);
     protected extraInfo: any;
     private static instance;
     private sender;
+    private storageManager;
     private serverURL;
+    private distinctID;
     private globalProperityes;
     static configure(config: TrackerConfig): void;
     static sharedInstance(): Tracker;
@@ -20,4 +23,7 @@ export declare class Tracker {
     }): void;
     setGlobalProperties(globalProperties: any): void;
     trackMessage(event: any, detail: any): void;
+    getDistinctID(): string;
+    setDistinctID(distinctID: string): void;
+    private generateDistinctID;
 }
