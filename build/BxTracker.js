@@ -40,7 +40,7 @@ var BxTracker = /** @class */ (function (_super) {
         this.systemInfo.$env_version = systemInfo['version'];
         wx.getNetworkType({
             success: function (res) {
-                _this.globalProperityes.$network_type = res.networkType;
+                _this.systemInfo.$network_type = res.networkType;
             },
             complete: function () {
                 _this.getSystemInfoComplete = true;

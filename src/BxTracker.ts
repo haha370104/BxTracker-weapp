@@ -24,7 +24,7 @@ export class BxTracker extends Tracker {
 
     wx.getNetworkType({
       success: res => {
-        this.globalProperityes.$network_type = res.networkType
+        this.systemInfo.$network_type = res.networkType
       },
       complete: () => {
         this.getSystemInfoComplete = true
