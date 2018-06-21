@@ -29,10 +29,12 @@ export class TrackSender {
 
     const appConstructor = App
 
-    App = function (app) {
+    App = (app) => {
       objectMethodWrapper(app, 'onHide', () => {
         this.forceToSend = true
-        this.tryToSendPatchedTrack().then(() => null)
+        this.tryToSendPatchedTrack().then(() => {
+          this.forceToSend = false
+        })
       })
       return appConstructor(app)
     }
@@ -73,6 +75,9 @@ export class TrackSender {
       return
     }
     let patch = trackPatch.slice(0, Math.min(trackPatch.length, this.maxNumberOfTrackInRequest))
+    if (patch.length === 0) {
+      return
+    }
     try {
       await this.sendTrack(patch)
       trackPatch.splice(0, patch.length)

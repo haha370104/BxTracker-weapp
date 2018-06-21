@@ -1,6 +1,6 @@
 {
   "name": "weapp-tracker",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "description": "A tracker used in wechat mini program.",
   "main": "build/index.js",
   "types": "./types/index.d.ts",

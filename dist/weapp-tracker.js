@@ -372,6 +372,7 @@ var TrackSender = /** @class */ (function () {
         if (patchCount === void 0) { patchCount = 10; }
         if (maxNumberOfTrackInRequest === void 0) { maxNumberOfTrackInRequest = 50; }
         if (customRequest === void 0) { customRequest = wx.request; }
+        var _this = this;
         this.patchCount = 10;
         this.maxNumberOfTrackInRequest = 50;
         this.processingFlag = false;
@@ -383,10 +384,11 @@ var TrackSender = /** @class */ (function () {
         this.customRequest = customRequest;
         var appConstructor = App;
         App = function (app) {
-            var _this = this;
             Wrapper_1.objectMethodWrapper(app, 'onHide', function () {
                 _this.forceToSend = true;
-                _this.tryToSendPatchedTrack().then(function () { return null; });
+                _this.tryToSendPatchedTrack().then(function () {
+                    _this.forceToSend = false;
+                });
             });
             return appConstructor(app);
         };
@@ -433,6 +435,9 @@ var TrackSender = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         patch = trackPatch.slice(0, Math.min(trackPatch.length, this.maxNumberOfTrackInRequest));
+                        if (patch.length === 0) {
+                            return [2 /*return*/];
+                        }
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 5, , 6]);
