@@ -15,7 +15,7 @@ var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
 var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
     function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
-        this.globalProperityes = {};
+        this.globalProperityes = function () { };
         this.distinctID = '';
         this.serverURL = '';
         this.serverURL = serverURL;
@@ -55,11 +55,17 @@ var Tracker = /** @class */ (function () {
         };
     };
     Tracker.prototype.setGlobalProperties = function (globalProperties) {
-        this.globalProperityes = globalProperties || {};
+        if (typeof globalProperties === 'object') {
+            var properties_2 = globalProperties;
+            this.globalProperityes = function () { return properties_2; };
+        }
+        if (globalProperties) {
+            this.globalProperityes = globalProperties;
+        }
     };
     Tracker.prototype.trackMessage = function (event, detail) {
         this.sender.addTrack({
-            properties: __assign({}, this.globalProperityes, detail),
+            properties: __assign({}, this.globalProperityes() || {}, detail),
             event: event,
             distinct_id: this.distinctID,
         });

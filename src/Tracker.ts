@@ -39,7 +39,7 @@ export class Tracker {
   }
 
   protected sender: TrackSender
-  protected globalProperityes: any = {}
+  protected globalProperityes: () => any = () => {}
   protected distinctID: string = ''
 
   private static instance: Tracker
@@ -75,14 +75,20 @@ export class Tracker {
     }
   }
 
-  public setGlobalProperties(globalProperties: any) {
-    this.globalProperityes = globalProperties || {}
+  public setGlobalProperties(globalProperties: () => any | any) {
+    if (typeof globalProperties === 'object') {
+      const properties = globalProperties as any
+      this.globalProperityes = () => properties
+    }
+    if (globalProperties) {
+      this.globalProperityes = globalProperties
+    }
   }
 
   public trackMessage(event, detail) {
     this.sender.addTrack({
       properties: {
-        ...this.globalProperityes,
+        ...this.globalProperityes() || {},
         ...detail,
       },
       event,
