@@ -52,7 +52,7 @@ export class BxTracker extends Tracker {
       this.sender.addTrack({
         properties: {
           ...systemInfo,
-          ...this.globalProperityes,
+          ...this.globalProperityes() || {},
           ...detail,
         },
         event,

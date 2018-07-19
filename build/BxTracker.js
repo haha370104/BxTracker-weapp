@@ -67,7 +67,7 @@ var BxTracker = /** @class */ (function (_super) {
         var _this = this;
         this.getSystemInfo(function (systemInfo) {
             _this.sender.addTrack({
-                properties: __assign({}, systemInfo, _this.globalProperityes, detail),
+                properties: __assign({}, systemInfo, _this.globalProperityes() || {}, detail),
                 event: event,
                 distinct_id: _this.distinctID,
             });
