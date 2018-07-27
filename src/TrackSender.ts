@@ -14,18 +14,20 @@ export class TrackSender {
   private url: string
   private patchCount = 10
   private maxNumberOfTrackInRequest = 50
+  private requestInterval: number
 
   private processingFlag: boolean = false
   private forceToSend: boolean = false
 
   private customRequest: CustomRequest
 
-  constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request) {
+  constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request, requestInterval = 1000) {
     this.url = url
     this.storageManager = new StroageManager(TrackSenderStoragePrefixKey)
     this.patchCount = patchCount
     this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest
     this.customRequest = customRequest
+    this.requestInterval = requestInterval
 
     const appConstructor = App
 
@@ -40,8 +42,21 @@ export class TrackSender {
     }
   }
 
-  private sendTrack(properties: any) {
+  private delay(time: number) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, time)
+    })
+  }
+
+  private async sendTrack(properties: any) {
     this.processingFlag = true
+
+    if (this.requestInterval > 0) {
+      await this.delay(this.requestInterval)
+    }
+
     return new Promise((resolve, reject) => {
       this.customRequest({
         url: this.url,

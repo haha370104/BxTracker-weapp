@@ -17,13 +17,16 @@ export interface TrackerConfig {
 
   // 用户已经标示的ID
   distinctID?: string
+
+  // 两次请求间隔(第一个请求结束到第二个请求开始)时间, 单位毫秒
+  requestInterval?: number
 }
 
 const TrackerStoragePrefixKey = 'TrackerStoragePrefixKey'
 const TrackerDistinctIDKey = 'TrackerDistinctIDKey'
 
 export class Tracker {
-  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string) {
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number) {
     this.serverURL = serverURL
     this.storageManager = new Storage(TrackerStoragePrefixKey)
     if (distinctID) {
@@ -35,7 +38,8 @@ export class Tracker {
     this.sender = new TrackSender(serverURL,
       patchCount || 10,
       maxNumberOfTrackInRequest || 50,
-      customRequest || wx.request)
+      customRequest || wx.request,
+      requestInterval === undefined ? 1000 : requestInterval)
   }
 
   protected sender: TrackSender
@@ -51,7 +55,7 @@ export class Tracker {
     if (this.instance) {
       throw new Error('has been configured')
     }
-    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID)
+    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval)
   }
 
   public static sharedInstance(): Tracker {
