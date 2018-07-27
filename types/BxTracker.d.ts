@@ -4,7 +4,7 @@ export declare class BxTracker extends Tracker {
     private getSystemInfoComplete;
     private systemInfo;
     private getSystemInfoQueue;
-    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string);
+    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number);
     private initSystemInfo;
     private getSystemInfo;
     trackMessage(event: any, detail: any): void;

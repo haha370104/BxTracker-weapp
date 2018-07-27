@@ -14,7 +14,7 @@ var Wrapper_1 = require("./Wrapper");
 var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
 var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
-    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
+    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
         this.globalProperityes = function () { };
         this.distinctID = '';
         this.serverURL = '';
@@ -27,13 +27,13 @@ var Tracker = /** @class */ (function () {
         else {
             this.distinctID = this.getDistinctID();
         }
-        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request);
+        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request, requestInterval === undefined ? 1000 : requestInterval);
     }
     Tracker.configure = function (config) {
         if (this.instance) {
             throw new Error('has been configured');
         }
-        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID);
+        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval);
     };
     Tracker.sharedInstance = function () {
         if (!this.instance) {

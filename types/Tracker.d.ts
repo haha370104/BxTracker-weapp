@@ -5,9 +5,10 @@ export interface TrackerConfig {
     maxNumberOfTrackInRequest?: number;
     customRequest?: CustomRequest;
     distinctID?: string;
+    requestInterval?: number;
 }
 export declare class Tracker {
-    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string);
+    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number);
     protected sender: TrackSender;
     protected globalProperityes: () => any;
     protected distinctID: string;

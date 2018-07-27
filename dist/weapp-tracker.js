@@ -117,8 +117,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = __webpack_require__(/*! ./Tracker */ "./build/Tracker.js");
 var BxTracker = /** @class */ (function (_super) {
     __extends(BxTracker, _super);
-    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
-        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) || this;
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) || this;
         _this.getSystemInfoComplete = false;
         _this.systemInfo = {};
         _this.getSystemInfoQueue = [];
@@ -368,10 +368,11 @@ var TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey';
 var TrackPatchKey = 'TrackPatchKey';
 var TrackIncrementIdKey = 'TrackIncrementIdKey';
 var TrackSender = /** @class */ (function () {
-    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest) {
+    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest, requestInterval) {
         if (patchCount === void 0) { patchCount = 10; }
         if (maxNumberOfTrackInRequest === void 0) { maxNumberOfTrackInRequest = 50; }
         if (customRequest === void 0) { customRequest = wx.request; }
+        if (requestInterval === void 0) { requestInterval = 1000; }
         var _this = this;
         this.patchCount = 10;
         this.maxNumberOfTrackInRequest = 50;
@@ -382,6 +383,7 @@ var TrackSender = /** @class */ (function () {
         this.patchCount = patchCount;
         this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest;
         this.customRequest = customRequest;
+        this.requestInterval = requestInterval;
         var appConstructor = App;
         App = function (app) {
             Wrapper_1.objectMethodWrapper(app, 'onHide', function () {
@@ -393,29 +395,48 @@ var TrackSender = /** @class */ (function () {
             return appConstructor(app);
         };
     }
+    TrackSender.prototype.delay = function (time) {
+        return new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve();
+            }, time);
+        });
+    };
     TrackSender.prototype.sendTrack = function (properties) {
-        var _this = this;
-        this.processingFlag = true;
-        return new Promise(function (resolve, reject) {
-            _this.customRequest({
-                url: _this.url,
-                method: 'POST',
-                data: {
-                    data: js_base64_1.Base64.encode(JSON.stringify(properties)),
-                },
-                success: function (res) {
-                    if (res.statusCode === 200) {
-                        resolve(res);
-                        return;
-                    }
-                    reject(res);
-                },
-                fail: function (reason) {
-                    reject(reason);
-                },
-                complete: function () {
-                    _this.processingFlag = false;
-                },
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.processingFlag = true;
+                        if (!(this.requestInterval > 0)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.delay(this.requestInterval)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, new Promise(function (resolve, reject) {
+                            _this.customRequest({
+                                url: _this.url,
+                                method: 'POST',
+                                data: {
+                                    data: js_base64_1.Base64.encode(JSON.stringify(properties)),
+                                },
+                                success: function (res) {
+                                    if (res.statusCode === 200) {
+                                        resolve(res);
+                                        return;
+                                    }
+                                    reject(res);
+                                },
+                                fail: function (reason) {
+                                    reject(reason);
+                                },
+                                complete: function () {
+                                    _this.processingFlag = false;
+                                },
+                            });
+                        })];
+                }
             });
         });
     };
@@ -518,7 +539,7 @@ var Wrapper_1 = __webpack_require__(/*! ./Wrapper */ "./build/Wrapper.js");
 var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
 var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
-    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID) {
+    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
         this.globalProperityes = function () { };
         this.distinctID = '';
         this.serverURL = '';
@@ -531,13 +552,13 @@ var Tracker = /** @class */ (function () {
         else {
             this.distinctID = this.getDistinctID();
         }
-        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request);
+        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request, requestInterval === undefined ? 1000 : requestInterval);
     }
     Tracker.configure = function (config) {
         if (this.instance) {
             throw new Error('has been configured');
         }
-        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID);
+        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval);
     };
     Tracker.sharedInstance = function () {
         if (!this.instance) {
