@@ -5,10 +5,11 @@ export declare class TrackSender {
     private patchCount;
     private maxNumberOfTrackInRequest;
     private requestInterval;
+    private enableBase64Encode;
     private processingFlag;
     private forceToSend;
     private customRequest;
-    constructor(url: string, patchCount?: number, maxNumberOfTrackInRequest?: number, customRequest?: CustomRequest, requestInterval?: number);
+    constructor(url: string, patchCount?: number, maxNumberOfTrackInRequest?: number, customRequest?: CustomRequest, requestInterval?: number, enableBase64Encode?: boolean);
     private delay;
     private sendTrack;
     private tryToSendPatchedTrack;

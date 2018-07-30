@@ -6,9 +6,10 @@ export interface TrackerConfig {
     customRequest?: CustomRequest;
     distinctID?: string;
     requestInterval?: number;
+    enableBase64Encode?: boolean;
 }
 export declare class Tracker {
-    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number);
+    protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number, enableBase64Encode: boolean);
     protected sender: TrackSender;
     protected globalProperityes: () => any;
     protected distinctID: string;

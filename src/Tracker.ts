@@ -6,27 +6,30 @@ export interface TrackerConfig {
   // 服务器地址
   serverURL: string
 
-  // track有多少条之后会上传
+  // track有多少条之后会上传, 默认为10
   patchCount?: number
 
-  // 每个请求最多的track条数
+  // 每个请求最多的track条数, 默认为50
   maxNumberOfTrackInRequest?: number
 
-  // 自定义的request方法
+  // 自定义的request方法, 默认为wx.request
   customRequest?: CustomRequest
 
   // 用户已经标示的ID
   distinctID?: string
 
-  // 两次请求间隔(第一个请求结束到第二个请求开始)时间, 单位毫秒
+  // 两次请求间隔(第一个请求结束到第二个请求开始)时间, 单位毫秒, 默认为1秒
   requestInterval?: number
+
+  // 开启base64编码, 默认不开启
+  enableBase64Encode?: boolean
 }
 
 const TrackerStoragePrefixKey = 'TrackerStoragePrefixKey'
 const TrackerDistinctIDKey = 'TrackerDistinctIDKey'
 
 export class Tracker {
-  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number) {
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number, enableBase64Encode: boolean) {
     this.serverURL = serverURL
     this.storageManager = new Storage(TrackerStoragePrefixKey)
     if (distinctID) {
@@ -39,23 +42,24 @@ export class Tracker {
       patchCount || 10,
       maxNumberOfTrackInRequest || 50,
       customRequest || wx.request,
-      requestInterval === undefined ? 1000 : requestInterval)
+      requestInterval === undefined ? 1000 : requestInterval,
+      enableBase64Encode)
   }
 
   protected sender: TrackSender
-  protected globalProperityes: () => any = () => {}
+  protected globalProperityes: () => any = () => {
+  }
   protected distinctID: string = ''
 
   private static instance: Tracker
   private storageManager: Storage
   private serverURL: string = ''
 
-
   public static configure(config: TrackerConfig) {
     if (this.instance) {
       throw new Error('has been configured')
     }
-    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval)
+    this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval, config.enableBase64Encode)
   }
 
   public static sharedInstance(): Tracker {

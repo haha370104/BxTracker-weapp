@@ -69,20 +69,23 @@
     // 服务器地址
     serverURL: string
   
-    // track有多少条之后会上传
+    // track有多少条之后会上传, 默认为10
     patchCount?: number
   
-    // 每个请求最多的track条数
+    // 每个请求最多的track条数, 默认为50
     maxNumberOfTrackInRequest?: number
   
-    // 自定义的request方法
+    // 自定义的request方法, 默认为wx.request
     customRequest?: CustomRequest
   
     // 用户已经标示的ID
     distinctID?: string
   
-    // 两次请求间隔(第一个请求结束到第二个请求开始)时间, 单位毫秒
+    // 两次请求间隔(第一个请求结束到第二个请求开始)时间, 单位毫秒, 默认为1秒
     requestInterval?: number
+  
+    // 开启base64编码, 默认不开启
+    enableBase64Encode?: boolean
   }
   ```
 

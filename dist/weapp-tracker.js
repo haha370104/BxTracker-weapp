@@ -117,8 +117,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = __webpack_require__(/*! ./Tracker */ "./build/Tracker.js");
 var BxTracker = /** @class */ (function (_super) {
     __extends(BxTracker, _super);
-    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
-        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) || this;
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode) || this;
         _this.getSystemInfoComplete = false;
         _this.systemInfo = {};
         _this.getSystemInfoQueue = [];
@@ -368,11 +368,12 @@ var TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey';
 var TrackPatchKey = 'TrackPatchKey';
 var TrackIncrementIdKey = 'TrackIncrementIdKey';
 var TrackSender = /** @class */ (function () {
-    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest, requestInterval) {
+    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest, requestInterval, enableBase64Encode) {
         if (patchCount === void 0) { patchCount = 10; }
         if (maxNumberOfTrackInRequest === void 0) { maxNumberOfTrackInRequest = 50; }
         if (customRequest === void 0) { customRequest = wx.request; }
         if (requestInterval === void 0) { requestInterval = 1000; }
+        if (enableBase64Encode === void 0) { enableBase64Encode = false; }
         var _this = this;
         this.patchCount = 10;
         this.maxNumberOfTrackInRequest = 50;
@@ -384,6 +385,7 @@ var TrackSender = /** @class */ (function () {
         this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest;
         this.customRequest = customRequest;
         this.requestInterval = requestInterval;
+        this.enableBase64Encode = enableBase64Encode;
         var appConstructor = App;
         App = function (app) {
             Wrapper_1.objectMethodWrapper(app, 'onHide', function () {
@@ -419,7 +421,7 @@ var TrackSender = /** @class */ (function () {
                                 url: _this.url,
                                 method: 'POST',
                                 data: {
-                                    data: js_base64_1.Base64.encode(JSON.stringify(properties)),
+                                    data: _this.enableBase64Encode ? js_base64_1.Base64.encode(JSON.stringify(properties)) : JSON.stringify(properties),
                                 },
                                 success: function (res) {
                                     if (res.statusCode === 200) {
@@ -539,8 +541,9 @@ var Wrapper_1 = __webpack_require__(/*! ./Wrapper */ "./build/Wrapper.js");
 var TrackerStoragePrefixKey = 'TrackerStoragePrefixKey';
 var TrackerDistinctIDKey = 'TrackerDistinctIDKey';
 var Tracker = /** @class */ (function () {
-    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
-        this.globalProperityes = function () { };
+    function Tracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode) {
+        this.globalProperityes = function () {
+        };
         this.distinctID = '';
         this.serverURL = '';
         this.serverURL = serverURL;
@@ -552,13 +555,13 @@ var Tracker = /** @class */ (function () {
         else {
             this.distinctID = this.getDistinctID();
         }
-        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request, requestInterval === undefined ? 1000 : requestInterval);
+        this.sender = new TrackSender_1.TrackSender(serverURL, patchCount || 10, maxNumberOfTrackInRequest || 50, customRequest || wx.request, requestInterval === undefined ? 1000 : requestInterval, enableBase64Encode);
     }
     Tracker.configure = function (config) {
         if (this.instance) {
             throw new Error('has been configured');
         }
-        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval);
+        this.instance = new this(config.serverURL, config.patchCount, config.maxNumberOfTrackInRequest, config.customRequest, config.distinctID, config.requestInterval, config.enableBase64Encode);
     };
     Tracker.sharedInstance = function () {
         if (!this.instance) {

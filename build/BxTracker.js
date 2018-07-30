@@ -21,8 +21,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Tracker_1 = require("./Tracker");
 var BxTracker = /** @class */ (function (_super) {
     __extends(BxTracker, _super);
-    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) {
-        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval) || this;
+    function BxTracker(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode) {
+        var _this = _super.call(this, serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode) || this;
         _this.getSystemInfoComplete = false;
         _this.systemInfo = {};
         _this.getSystemInfoQueue = [];

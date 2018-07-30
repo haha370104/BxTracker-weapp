@@ -7,8 +7,8 @@ export class BxTracker extends Tracker {
   private systemInfo: any = {}
   private getSystemInfoQueue = []
 
-  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number) {
-    super(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval)
+  protected constructor(serverURL: string, patchCount: number, maxNumberOfTrackInRequest: number, customRequest: CustomRequest, distinctID: string, requestInterval: number, enableBase64Encode: boolean) {
+    super(serverURL, patchCount, maxNumberOfTrackInRequest, customRequest, distinctID, requestInterval, enableBase64Encode)
     this.initSystemInfo()
   }
 

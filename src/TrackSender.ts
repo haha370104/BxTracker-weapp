@@ -15,19 +15,21 @@ export class TrackSender {
   private patchCount = 10
   private maxNumberOfTrackInRequest = 50
   private requestInterval: number
+  private enableBase64Encode: boolean
 
   private processingFlag: boolean = false
   private forceToSend: boolean = false
 
   private customRequest: CustomRequest
 
-  constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request, requestInterval = 1000) {
+  constructor(url: string, patchCount: number = 10, maxNumberOfTrackInRequest: number = 50, customRequest: CustomRequest = wx.request, requestInterval = 1000, enableBase64Encode: boolean = false) {
     this.url = url
     this.storageManager = new StroageManager(TrackSenderStoragePrefixKey)
     this.patchCount = patchCount
     this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest
     this.customRequest = customRequest
     this.requestInterval = requestInterval
+    this.enableBase64Encode = enableBase64Encode
 
     const appConstructor = App
 
@@ -62,7 +64,7 @@ export class TrackSender {
         url: this.url,
         method: 'POST',
         data: {
-          data: Base64.encode(JSON.stringify(properties)),
+          data: this.enableBase64Encode ? Base64.encode(JSON.stringify(properties)) : JSON.stringify(properties),
         },
         success: res => {
           if (res.statusCode === 200) {

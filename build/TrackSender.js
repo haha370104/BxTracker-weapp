@@ -42,11 +42,12 @@ var TrackSenderStoragePrefixKey = 'TrackSenderStoragePrefixKey';
 var TrackPatchKey = 'TrackPatchKey';
 var TrackIncrementIdKey = 'TrackIncrementIdKey';
 var TrackSender = /** @class */ (function () {
-    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest, requestInterval) {
+    function TrackSender(url, patchCount, maxNumberOfTrackInRequest, customRequest, requestInterval, enableBase64Encode) {
         if (patchCount === void 0) { patchCount = 10; }
         if (maxNumberOfTrackInRequest === void 0) { maxNumberOfTrackInRequest = 50; }
         if (customRequest === void 0) { customRequest = wx.request; }
         if (requestInterval === void 0) { requestInterval = 1000; }
+        if (enableBase64Encode === void 0) { enableBase64Encode = false; }
         var _this = this;
         this.patchCount = 10;
         this.maxNumberOfTrackInRequest = 50;
@@ -58,6 +59,7 @@ var TrackSender = /** @class */ (function () {
         this.maxNumberOfTrackInRequest = maxNumberOfTrackInRequest;
         this.customRequest = customRequest;
         this.requestInterval = requestInterval;
+        this.enableBase64Encode = enableBase64Encode;
         var appConstructor = App;
         App = function (app) {
             Wrapper_1.objectMethodWrapper(app, 'onHide', function () {
@@ -93,7 +95,7 @@ var TrackSender = /** @class */ (function () {
                                 url: _this.url,
                                 method: 'POST',
                                 data: {
-                                    data: js_base64_1.Base64.encode(JSON.stringify(properties)),
+                                    data: _this.enableBase64Encode ? js_base64_1.Base64.encode(JSON.stringify(properties)) : JSON.stringify(properties),
                                 },
                                 success: function (res) {
                                     if (res.statusCode === 200) {
