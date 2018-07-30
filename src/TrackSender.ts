@@ -64,7 +64,7 @@ export class TrackSender {
         url: this.url,
         method: 'POST',
         data: {
-          data: this.enableBase64Encode ? Base64.encode(JSON.stringify(properties)) : JSON.stringify(properties),
+          data: this.enableBase64Encode ? Base64.encode(JSON.stringify(properties)) : properties,
         },
         success: res => {
           if (res.statusCode === 200) {

@@ -95,7 +95,7 @@ var TrackSender = /** @class */ (function () {
                                 url: _this.url,
                                 method: 'POST',
                                 data: {
-                                    data: _this.enableBase64Encode ? js_base64_1.Base64.encode(JSON.stringify(properties)) : JSON.stringify(properties),
+                                    data: _this.enableBase64Encode ? js_base64_1.Base64.encode(JSON.stringify(properties)) : properties,
                                 },
                                 success: function (res) {
                                     if (res.statusCode === 200) {
